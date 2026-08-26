@@ -54,7 +54,7 @@ jobs:
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=yes \
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
-            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' SERVER_NAME='${SITE_HOST}' bash -s" \
+            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' SERVER_NAME='${SITE_HOST}' CERTBOT_EMAIL='${{ secrets.CERTBOT_EMAIL }}' bash -s" \
             < deploy/provision.sh
 
       # Trailing slash on site/ matters: without it rsync would create
@@ -68,17 +68,37 @@ jobs:
             site/ \
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
-      - name: Verify the site responds
+      # The only proof the deploy worked: Claude Code sessions cannot reach the
+      # server, so this step's output is the record.
+      - name: Verify the site responds over HTTPS
         run: |
+          served=0
           for attempt in $(seq 1 6); do
-            code=$(curl -sS -o /tmp/page.html -w '%{http_code}' --max-time 15 "http://${SITE_HOST}/" || echo 000)
-            echo "attempt ${attempt}: HTTP ${code}"
+            code=$(curl -sS -o /tmp/page.html -w '%{http_code}' --max-time 15 "https://${SITE_HOST}/" || echo 000)
+            echo "attempt ${attempt}: https -> HTTP ${code}"
             if [ "$code" = "200" ]; then
-              echo "--- served page, first lines ---"
-              head -n 12 /tmp/page.html
-              exit 0
+              served=1
+              break
             fi
             sleep 5
           done
-          echo "::error::${SITE_HOST} never returned 200"
-          exit 1
+          if [ "$served" != "1" ]; then
+            echo "::error::https://${SITE_HOST}/ never returned 200"
+            exit 1
+          fi
+
+          echo "--- certificate ---"
+          curl -sS -o /dev/null --max-time 15 -w 'issuer: %{ssl_verify_result} (0 = verified)\n' "https://${SITE_HOST}/"
+
+          redirect=$(curl -sS -o /dev/null --max-time 15 -w '%{http_code} %{redirect_url}' "http://${SITE_HOST}/" || echo '000 -')
+          echo "http -> ${redirect}"
+          case "$redirect" in
+            30[128]" https://"*) ;;
+            *)
+              echo "::error::http://${SITE_HOST}/ does not redirect to https (got: ${redirect})"
+              exit 1
+              ;;
+          esac
+
+          echo "--- served page, first lines ---"
+          head -n 12 /tmp/page.html
