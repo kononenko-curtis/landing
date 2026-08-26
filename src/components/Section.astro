@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** Anchor target, also used to link the heading from elsewhere. */
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<section id={id}>
+  <div class="wrap">
+    <h2>{title}</h2>
+    <slot />
+  </div>
+</section>
+
+<style>
+  section {
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+    border-top: 1px solid var(--border);
+  }
+
+  h2 {
+    margin: 0 0 1.75rem;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
+</style>

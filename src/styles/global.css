@@ -1,0 +1,91 @@
+/* Design tokens. Light is the base; only the values that change are redefined
+   for dark, so a new colour never has its sole definition inside a media
+   query. */
+:root {
+  --bg: #fbfbfa;
+  --panel: #ffffff;
+  --panel-hover: #f6f5f2;
+  --border: #e4e2dd;
+  --text: #1f1e1c;
+  --muted: #6b6862;
+  --accent: #c2410c;
+  --chip-bg: #f2f0eb;
+
+  --measure: 62rem;
+  --gap: clamp(1rem, 3vw, 2rem);
+  --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16150f;
+    --panel: #1e1d17;
+    --panel-hover: #26241d;
+    --border: #34322a;
+    --text: #f2f0ea;
+    --muted: #a29d92;
+    --accent: #fb923c;
+    --chip-bg: #2a2821;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gap);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}

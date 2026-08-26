@@ -1,0 +1,45 @@
+---
+import { site } from '../data/site';
+import Section from './Section.astro';
+---
+
+<Section id="contact" title="Контакты">
+  {
+    site.links.length > 0 ? (
+      <ul>
+        {site.links.map((link) => (
+          <li>
+            <a href={link.href} rel="me noopener">
+              {link.label}
+            </a>
+            {link.note && <span class="note">{link.note}</span>}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Ссылки пока не заданы — добавь их в <code>src/data/site.ts</code>.</p>
+    )
+  }
+</Section>
+
+<style>
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .note {
+    margin-left: 0.5rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .empty {
+    margin: 0;
+    color: var(--muted);
+  }
+</style>

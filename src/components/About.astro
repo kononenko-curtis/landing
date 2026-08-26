@@ -1,0 +1,25 @@
+---
+import { site } from '../data/site';
+import Section from './Section.astro';
+---
+
+<Section id="about" title="О себе">
+  <div class="prose">
+    {site.about.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</Section>
+
+<style>
+  .prose {
+    max-width: 62ch;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 1rem;
+    color: var(--muted);
+  }
+
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

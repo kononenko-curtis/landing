@@ -22,6 +22,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Catches type and template errors here rather than shipping a broken
+      # page to the server.
+      - name: Type check
+        run: npm run check
+
+      - name: Build site
+        run: npm run build
+
       - name: Install deploy tooling
         run: |
           sudo apt-get update -qq
@@ -57,15 +73,15 @@ jobs:
             "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' SERVER_NAME='${SITE_HOST}' CERTBOT_EMAIL='${{ secrets.CERTBOT_EMAIL }}' bash -s" \
             < deploy/provision.sh
 
-      # Trailing slash on site/ matters: without it rsync would create
-      # <DEPLOY_PATH>/site/ instead of writing into DEPLOY_PATH itself.
+      # Trailing slash on dist/ matters: without it rsync would create
+      # <DEPLOY_PATH>/dist/ instead of writing into DEPLOY_PATH itself.
       - name: Upload site
         env:
           SSHPASS: ${{ secrets.DEPLOY_PASSWORD }}
         run: |
           sshpass -e rsync -rlvz --delete --chmod=D755,F644 \
             -e "ssh -o StrictHostKeyChecking=yes" \
-            site/ \
+            dist/ \
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
       # The only proof the deploy worked: Claude Code sessions cannot reach the

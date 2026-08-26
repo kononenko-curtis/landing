@@ -1,0 +1,53 @@
+---
+import { site } from '../data/site';
+import Section from './Section.astro';
+---
+
+<Section id="skills" title="Стек">
+  <div class="groups">
+    {
+      site.skills.map((group) => (
+        <div class="group">
+          <h3>{group.title}</h3>
+          <ul>
+            {group.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .groups {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  h3 {
+    margin: 0 0 0.85rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    font-size: 0.875rem;
+  }
+</style>
