@@ -27,17 +27,24 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq sshpass rsync
 
+      # Scanning the live host is the authoritative source: those are the keys
+      # that must match at connect time. DEPLOY_KNOWN_HOSTS is appended as an
+      # extra pin when set, never used as the only source — a truncated or
+      # mistyped paste there must not be able to break the deploy.
       - name: Trust the server host key
         run: |
           mkdir -p ~/.ssh
+          ssh-keyscan -T 15 "${{ secrets.DEPLOY_HOST }}" > ~/.ssh/known_hosts 2>/dev/null || true
           if [ -n "${{ secrets.DEPLOY_KNOWN_HOSTS }}" ]; then
-            printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          else
-            echo "DEPLOY_KNOWN_HOSTS is empty, falling back to ssh-keyscan"
-            ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" > ~/.ssh/known_hosts 2>/dev/null
+            printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
           fi
           chmod 600 ~/.ssh/known_hosts
-          echo "known_hosts entries: $(wc -l < ~/.ssh/known_hosts)"
+          keys=$(grep -cE '^[^#[:space:]]' ~/.ssh/known_hosts || true)
+          echo "known_hosts key lines: ${keys}"
+          if [ "${keys:-0}" -eq 0 ]; then
+            echo "::error::no host key could be obtained for the server"
+            exit 1
+          fi
 
       # sshpass -e reads the password from $SSHPASS. The -p form would expose it
       # in the process list to every other step on the runner.
