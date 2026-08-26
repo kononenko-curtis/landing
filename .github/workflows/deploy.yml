@@ -1,0 +1,77 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push supersedes an in-flight one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  SITE_HOST: kononenko.duckdns.org
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deploy tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass rsync
+
+      - name: Trust the server host key
+        run: |
+          mkdir -p ~/.ssh
+          if [ -n "${{ secrets.DEPLOY_KNOWN_HOSTS }}" ]; then
+            printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          else
+            echo "DEPLOY_KNOWN_HOSTS is empty, falling back to ssh-keyscan"
+            ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          echo "known_hosts entries: $(wc -l < ~/.ssh/known_hosts)"
+
+      # sshpass -e reads the password from $SSHPASS. The -p form would expose it
+      # in the process list to every other step on the runner.
+      - name: Provision server (nginx + web root)
+        env:
+          SSHPASS: ${{ secrets.DEPLOY_PASSWORD }}
+        run: |
+          sshpass -e ssh -o StrictHostKeyChecking=yes \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' SERVER_NAME='${SITE_HOST}' bash -s" \
+            < deploy/provision.sh
+
+      # Trailing slash on site/ matters: without it rsync would create
+      # <DEPLOY_PATH>/site/ instead of writing into DEPLOY_PATH itself.
+      - name: Upload site
+        env:
+          SSHPASS: ${{ secrets.DEPLOY_PASSWORD }}
+        run: |
+          sshpass -e rsync -rlvz --delete --chmod=D755,F644 \
+            -e "ssh -o StrictHostKeyChecking=yes" \
+            site/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      - name: Verify the site responds
+        run: |
+          for attempt in $(seq 1 6); do
+            code=$(curl -sS -o /tmp/page.html -w '%{http_code}' --max-time 15 "http://${SITE_HOST}/" || echo 000)
+            echo "attempt ${attempt}: HTTP ${code}"
+            if [ "$code" = "200" ]; then
+              echo "--- served page, first lines ---"
+              head -n 12 /tmp/page.html
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::${SITE_HOST} never returned 200"
+          exit 1
