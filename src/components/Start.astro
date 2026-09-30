@@ -1,0 +1,77 @@
+---
+import { site } from '../data/site';
+import Button from './Button.astro';
+import Emphasized from './Emphasized.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { start, hero, telegramUrl } = site;
+---
+
+<Section id="start" tone="dark" labelledby="start-title">
+  <SectionHeading id="start-title" title={start.title} />
+
+  <ol class="steps">
+    {
+      start.steps.map((step) => (
+        <li>
+          <Emphasized item={step} />
+        </li>
+      ))
+    }
+  </ol>
+
+  {/* Step one is the introductory call, so the hero's own button closes the
+      section; its label is reused as-is, not new copy. */}
+  <div class="action">
+    <Button href={telegramUrl}>{hero.primaryCta}</Button>
+  </div>
+</Section>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0 clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  li {
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--dark-line);
+    color: var(--on-dark-2);
+    font-size: 1.0625rem;
+    counter-increment: step;
+  }
+
+  /* The source list is numbered 1–3; the numerals come from a CSS counter so
+     the list stays a plain <ol> for assistive technology. */
+  li::before {
+    content: counter(step);
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--on-dark);
+    font-family: var(--font-serif);
+    font-size: clamp(2.75rem, 5vw, 3.75rem);
+    line-height: 1;
+  }
+
+  .action {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  /* Same as the hero: full-width buttons on phones. */
+  @media (max-width: 30rem) {
+    .action :global(.button) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
