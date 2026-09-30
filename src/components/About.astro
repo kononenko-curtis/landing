@@ -1,0 +1,89 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { about, photos } = site;
+---
+
+<Section id="about" tone="white" labelledby="about-title">
+  <div class="grid">
+    <div class="head">
+      <SectionHeading id="about-title" title={about.title} />
+    </div>
+
+    <div class="photo">
+      <Image
+        src={photos.about}
+        alt={site.name}
+        widths={[480, 720, 960]}
+        sizes="(min-width: 56rem) 30rem, calc(100vw - 2.5rem)"
+      />
+    </div>
+
+    <div class="body">
+      {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-areas: 'head' 'photo' 'body';
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .photo {
+    grid-area: photo;
+    max-width: 30rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+  }
+
+  .body {
+    grid-area: body;
+    display: grid;
+    gap: 1.5rem;
+    max-width: 40rem;
+  }
+
+  .body p {
+    color: var(--ink-2);
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+
+  /* The opening paragraph is set as a lead; the wording is untouched. */
+  .body p:first-child {
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 1.7vw, 1.4rem);
+    line-height: 1.5;
+  }
+
+  /* Mirror of the coaching section: text on the left, photo on the right. */
+  @media (min-width: 56rem) {
+    .grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-areas:
+        'head photo'
+        'body photo';
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(3rem, 7vw, 6rem);
+    }
+
+    .photo {
+      justify-self: end;
+      width: 100%;
+      margin-bottom: 0;
+    }
+  }
+</style>
