@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import Button from './Button.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { contacts, hero, photos, telegramUrl } = site;
+
+const external = (href: string) =>
+  href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+<Section id="contacts" tone="dark" labelledby="contacts-title">
+  <div class="grid">
+    <div class="head">
+      <SectionHeading id="contacts-title" label={contacts.label} title={contacts.title} />
+    </div>
+
+    <div class="photo">
+      <Image
+        src={photos.contact}
+        alt={site.name}
+        widths={[480, 720, 1024]}
+        sizes="(min-width: 56rem) 30rem, calc(100vw - 2.5rem)"
+      />
+    </div>
+
+    <div class="body">
+      <p class="text">{contacts.text}</p>
+
+      <ul class="links">
+        {
+          contacts.links.map((link) => (
+            <li>
+              {/* One line on purpose: whitespace inside <a> would be underlined. */}
+              <span class="label">{link.label}:</span> <a href={link.href} {...external(link.href)}>{link.value}</a>
+            </li>
+          ))
+        }
+      </ul>
+
+      {/* The hero's second button label, reused as-is. */}
+      <div class="action">
+        <Button href={telegramUrl}>{hero.secondaryCta}</Button>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-areas: 'head' 'photo' 'body';
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .photo {
+    grid-area: photo;
+    max-width: 30rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+  }
+
+  .body {
+    grid-area: body;
+  }
+
+  .text {
+    max-width: 34rem;
+    color: var(--on-dark-2);
+    font-size: clamp(1.125rem, 1.8vw, 1.3rem);
+    line-height: 1.55;
+  }
+
+  .links {
+    margin: 2.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding-block: 1rem;
+    border-top: 1px solid var(--dark-line);
+  }
+
+  li:last-child {
+    border-bottom: 1px solid var(--dark-line);
+  }
+
+  .label {
+    color: var(--on-dark-2);
+  }
+
+  li a {
+    color: var(--on-dark);
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  li a:hover {
+    text-decoration: underline;
+  }
+
+  li a:focus-visible {
+    outline-color: var(--on-dark);
+  }
+
+  .action {
+    margin-top: 2.25rem;
+  }
+
+  @media (max-width: 30rem) {
+    .action :global(.button) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 56rem) {
+    .grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas:
+        'photo head'
+        'photo body';
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(3rem, 7vw, 6rem);
+    }
+
+    .photo {
+      margin-bottom: 0;
+    }
+  }
+</style>
