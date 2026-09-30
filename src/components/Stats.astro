@@ -1,0 +1,73 @@
+---
+import { site } from '../data/site';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { stats } = site;
+---
+
+<Section id="stats" tone="dark" labelledby="stats-title">
+  <SectionHeading id="stats-title" title={stats.title} hidden />
+  <ul class="stats">
+    {
+      stats.items.map((item) => (
+        <li>
+          <p class="value">{item.value}</p>
+          <p class="label">{item.label}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .stats {
+    display: grid;
+    gap: 0 clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--dark-line);
+  }
+
+  .value {
+    margin-bottom: 0.6rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .label {
+    max-width: 28ch;
+    color: var(--on-dark-2);
+    font-size: 0.975rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 40rem) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Five items: three across the first row, two wider ones below. */
+  @media (min-width: 64rem) {
+    .stats {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    li {
+      grid-column: span 2;
+    }
+
+    li:nth-child(n + 4) {
+      grid-column: span 3;
+    }
+  }
+</style>
