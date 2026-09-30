@@ -4,8 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Personal landing page for the repository owner (`kononenko-curtis/landing`), served at
-http://kononenko.duckdns.org.
+Landing page for Кирилл Кононенко — consulting for online schools and education projects,
+and coaching for founders and executives. Served at https://kononenko.duckdns.org.
+Every call to action opens Telegram, `@kononenko_curtis`.
 
 **Stack: Astro** (static output, no client JS). Chosen because the page is content, not
 an application: Astro ships zero JavaScript by default, so the built output drops straight
@@ -13,6 +14,21 @@ into the existing rsync-to-nginx pipeline while still giving components, layouts
 TypeScript. Next.js was rejected — it ships a React runtime for a page that has no
 interactivity. If interactivity is ever needed, reach for an Astro island rather than
 changing the stack.
+
+## Content rules
+
+- **The copy is the owner's final text, transferred verbatim.** Do not reword, shorten,
+  "improve" or add to it — not in `site.ts`, and not as stray strings in components.
+  Visible text that is not in the owner's copy does not belong on the page. Where a
+  button repeats (end of "Как начать работу", contacts), it reuses a hero label rather
+  than introducing new wording. Image `alt` is the owner's name.
+- **Never publish a phone number.** The owner asked for it explicitly.
+- A bold lead-in inside a sentence is stored as `{ strong, rest }`, with `rest` carrying
+  its own leading separator (`' — '` or `' '`). Render it through `Emphasized.astro`,
+  which keeps `<strong>{strong}</strong>{rest}` on one line: whitespace there would
+  produce a double space in the sentence.
+- The original source (`CONTENT.md`) was deleted after the transfer; it is in git history
+  (`git show 273cdea:CONTENT.md`) if the wording ever needs checking against it.
 
 ## Workflow
 
@@ -29,12 +45,17 @@ Three pieces, deliberately kept separate:
 
 - `src/` — **the site.** `npm run build` emits static files into `dist/`, and that is what
   gets rsynced. `dist/` and `node_modules/` are gitignored; never commit build output.
-  - `src/data/site.ts` — **all copy lives here**, as one typed object. Components decide
-    layout only. Change wording here, not in markup. Entries still marked `TODO` are
-    placeholders awaiting the owner's real details.
-  - `src/components/` — one component per section, each owning its own scoped `<style>`.
-  - `src/styles/global.css` — design tokens on `:root`, with only the changed values
-    redefined under `prefers-color-scheme: dark`.
+  - `src/data/site.ts` — **all copy and the photo-to-section mapping**, as one object.
+    Components decide layout only.
+  - `src/components/` — one component per section, in page order in
+    `src/pages/index.astro`. Shared building blocks: `Section` (band tone + padding),
+    `SectionHeading` (label + h2, optionally screen-reader-only), `Button`, `ItemList` +
+    `FormatNote` (the titled list and "Формат:" card used by consulting and coaching),
+    and `Emphasized`.
+  - `src/pages/og.jpg.ts` — builds `/og.jpg` (1200×630) by cropping `hero.jpg` with sharp
+    at build time, so the social preview cannot drift from the page photo. The crop's
+    vertical position is the `TOP` constant, picked by eye; revisit it if the hero photo
+    is replaced.
 - `deploy/provision.sh` — **server state.** Piped into `bash -s` over SSH on every deploy,
   so it must stay idempotent. Installs nginx and certbot if absent, writes
   `/etc/nginx/sites-available/landing`, removes Debian's default site (it also claims
@@ -42,6 +63,21 @@ Three pieces, deliberately kept separate:
   and reloads nginx. Server-side configuration belongs here, not in the workflow.
 - `.github/workflows/deploy.yml` — **orchestration.** Runs on every push to `main` and on
   manual dispatch.
+
+### Design system
+
+- **Monochrome**, built around the black-and-white studio portraits: every surface and
+  text colour is a neutral grey, and `--accent` (vermilion) is used by buttons and
+  nothing else. Tokens live on `:root` in `src/styles/global.css`, with contrast noted
+  beside the ones near the WCAG limit; `--ink-3` is the lightest grey allowed for text.
+- **Light theme only, on purpose.** The photos are shot on a light backdrop and would read
+  as glowing rectangles on a dark page. Contrast comes from `tone="dark"` bands instead
+  (numbers, how to start, contacts), alternating with light and white bands.
+- Type: Playfair Display for headings, Onest for text, both self-hosted through
+  `@fontsource-variable` with the Cyrillic subsets preloaded in `Base.astro`.
+- Photos go through `astro:assets` `<Image>` with explicit `widths` and `sizes`. The hero
+  image is `loading="eager"` + `fetchpriority="high"` (it is the LCP element); the rest
+  stay lazy. Photo sections alternate sides: coaching left, about right, contacts left.
 
 The deploy is verified end-to-end inside the workflow: after rsync it requires
 `https://kononenko.duckdns.org/` to return 200 and plain HTTP to redirect to it.
