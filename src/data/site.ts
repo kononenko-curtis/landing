@@ -70,12 +70,14 @@ export const site = {
 
   stats: {
     title: 'Цифры',
+    // Short values only; the meaning lives in the label (owner's revision).
     items: [
-      { value: '15+ лет', label: 'в образовании' },
-      { value: 'Из убытка в прибыль за 1,5 года', label: 'Лектариум, EBITDA вышла из минуса' },
-      { value: '×2', label: 'выручка Лектариума в 2026 году к 2025-му' },
+      { value: '15+', label: 'лет в образовании' },
+      { value: '1,5 года', label: 'чтобы вывести Лектариум из убытка в прибыль' },
+      // Non-breaking space keeps "к 2025-му" from splitting across lines.
+      { value: '×2', label: 'выручка Лектариума в 2026 году к\u00a02025-му' },
       { value: '10 → 200', label: 'человек в команде направления, которое мы запускали в Тетрике' },
-      { value: 'До сотен миллионов', label: 'рублей годовой выручки B2B/B2G-направления Фоксфорда' },
+      { value: 'сотни млн ₽', label: 'годовой выручки B2B/B2G-направления Фоксфорда' },
     ] satisfies Stat[],
   },
 

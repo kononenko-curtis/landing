@@ -6,7 +6,7 @@ import SectionHeading from './SectionHeading.astro';
 const { stats } = site;
 ---
 
-<Section id="stats" tone="dark" labelledby="stats-title">
+<Section id="stats" tone="dark" labelledby="stats-title" compactTop>
   <SectionHeading id="stats-title" title={stats.title} hidden />
   <ul class="stats">
     {
@@ -21,30 +21,36 @@ const { stats } = site;
 </Section>
 
 <style>
+  /* Equal columns at every width: one, then three, then all five. */
   .stats {
     display: grid;
-    gap: 0 clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 clamp(1.25rem, 3vw, 2.5rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   li {
-    padding-block: 1.75rem;
+    /* Lets the value size itself from the column width (cqi below). */
+    container-type: inline-size;
+    padding-block: 1.5rem;
     border-top: 1px solid var(--dark-line);
   }
 
+  /* One size for every value, derived from the column width, which is the
+     same for all columns. 17cqi leaves the longest value ("сотни млн ₽")
+     a little room on one line (it needs 17.6); nowrap stops it breaking. */
   .value {
     margin-bottom: 0.6rem;
     font-family: var(--font-serif);
-    font-size: clamp(2rem, 3.4vw, 2.75rem);
-    line-height: 1.08;
+    font-size: min(3rem, 17cqi);
+    line-height: 1.05;
     letter-spacing: -0.015em;
-    text-wrap: balance;
+    white-space: nowrap;
   }
 
   .label {
-    max-width: 28ch;
     color: var(--on-dark-2);
     font-size: 0.975rem;
     line-height: 1.5;
@@ -52,22 +58,13 @@ const { stats } = site;
 
   @media (min-width: 40rem) {
     .stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
-  /* Five items: three across the first row, two wider ones below. */
   @media (min-width: 64rem) {
     .stats {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-
-    li {
-      grid-column: span 2;
-    }
-
-    li:nth-child(n + 4) {
-      grid-column: span 3;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
   }
 </style>

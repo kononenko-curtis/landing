@@ -5,12 +5,14 @@ interface Props {
   tone?: 'light' | 'white' | 'dark';
   /** id of the element that names the section, for aria-labelledby. */
   labelledby?: string;
+  /** Halve the top padding (the numbers band sits right under the hero). */
+  compactTop?: boolean;
 }
 
-const { id, tone = 'light', labelledby } = Astro.props;
+const { id, tone = 'light', labelledby, compactTop = false } = Astro.props;
 ---
 
-<section id={id} class:list={['section', tone]} aria-labelledby={labelledby}>
+<section id={id} class:list={['section', tone, { 'compact-top': compactTop }]} aria-labelledby={labelledby}>
   <div class="wrap">
     <slot />
   </div>
@@ -19,6 +21,10 @@ const { id, tone = 'light', labelledby } = Astro.props;
 <style>
   .section {
     padding-block: var(--section-y);
+  }
+
+  .compact-top {
+    padding-top: calc(var(--section-y) / 2);
   }
 
   .white {
