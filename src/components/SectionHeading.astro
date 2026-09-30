@@ -1,0 +1,34 @@
+---
+interface Props {
+  /** Becomes the heading's id, for the section's aria-labelledby. */
+  id: string;
+  title: string;
+  /** Optional small label above the heading. */
+  label?: string;
+  /** Render the heading for screen readers only. */
+  hidden?: boolean;
+}
+
+const { id, title, label, hidden = false } = Astro.props;
+---
+
+<div class:list={['heading', { 'visually-hidden': hidden }]}>
+  {label && <p class="eyebrow">{label}</p>}
+  <h2 id={id}>{title}</h2>
+</div>
+
+<style>
+  .heading {
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  h2 {
+    max-width: 22ch;
+    font-size: clamp(2rem, 4.6vw, 3.25rem);
+  }
+
+  /* Inside dark sections the label must lighten with the rest of the text. */
+  :global(.dark) .eyebrow {
+    color: var(--on-dark-2);
+  }
+</style>

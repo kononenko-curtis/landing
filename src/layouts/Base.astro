@@ -1,19 +1,25 @@
 ---
-import { site } from '../data/site';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/playfair-display';
 import '../styles/global.css';
+
+// The page is Russian, so the Cyrillic subsets are needed for the first paint.
+// Preloading them avoids a visible swap from the fallback font. Vite resolves
+// these to the same hashed files the @font-face rules above point at.
+import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
+import playfairCyrillic from '@fontsource-variable/playfair-display/files/playfair-display-cyrillic-wght-normal.woff2?url';
+
+import { site } from '../data/site';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title = site.seo.title, description = site.seo.description } = Astro.props;
 
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
-// `||` rather than `??`: site.description defaults to an empty string, which
-// ?? would happily pass through as an empty meta tag.
-const pageDescription = description || site.description || site.tagline;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.jpg', Astro.site);
 ---
 
 <!doctype html>
@@ -21,18 +27,27 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{pageTitle}</title>
-    <meta name="description" content={pageDescription} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={pageDescription} />
-    <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <link rel="preload" href={onestCyrillic} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={playfairCyrillic} as="font" type="font/woff2" crossorigin />
 
-    <meta name="theme-color" content="#fbfbfa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#16150f" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#f4f4f4" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>

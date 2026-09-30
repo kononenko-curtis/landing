@@ -1,28 +1,32 @@
 ---
 interface Props {
-  /** Anchor target, also used to link the heading from elsewhere. */
   id: string;
-  title: string;
+  /** light = page grey, white = raised band, dark = inverted band. */
+  tone?: 'light' | 'white' | 'dark';
+  /** id of the element that names the section, for aria-labelledby. */
+  labelledby?: string;
 }
 
-const { id, title } = Astro.props;
+const { id, tone = 'light', labelledby } = Astro.props;
 ---
 
-<section id={id}>
+<section id={id} class:list={['section', tone]} aria-labelledby={labelledby}>
   <div class="wrap">
-    <h2>{title}</h2>
     <slot />
   </div>
 </section>
 
 <style>
-  section {
-    padding-block: clamp(2.5rem, 7vw, 4.5rem);
-    border-top: 1px solid var(--border);
+  .section {
+    padding-block: var(--section-y);
   }
 
-  h2 {
-    margin: 0 0 1.75rem;
-    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  .white {
+    background: var(--surface);
+  }
+
+  .dark {
+    background: var(--dark);
+    color: var(--on-dark);
   }
 </style>

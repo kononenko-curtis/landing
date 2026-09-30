@@ -1,0 +1,77 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+  /** Light-on-dark styling for the secondary button inside dark sections. */
+  onDark?: boolean;
+}
+
+const { href, variant = 'primary', onDark = false } = Astro.props;
+const external = /^https?:/.test(href);
+---
+
+<a
+  class:list={['button', variant, { 'on-dark': onDark }]}
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+>
+  <slot />
+</a>
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0.85rem 1.6rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font: 600 1rem/1.2 var(--font-sans);
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  /* The accent colour appears here and nowhere else on the page. */
+  .primary {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .secondary {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .secondary:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .secondary.on-dark {
+    border-color: var(--on-dark);
+    color: var(--on-dark);
+  }
+
+  .secondary.on-dark:hover {
+    background: var(--on-dark);
+    color: var(--dark);
+  }
+
+  .primary:focus-visible {
+    outline-color: var(--accent);
+  }
+
+  .on-dark:focus-visible {
+    outline-color: var(--on-dark);
+  }
+</style>
