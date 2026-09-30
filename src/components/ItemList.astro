@@ -1,0 +1,54 @@
+---
+import type { Emphasized as EmphasizedItem } from '../data/site';
+import Emphasized from './Emphasized.astro';
+
+interface Props {
+  title: string;
+  items: (string | EmphasizedItem)[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<div>
+  <h3>{title}</h3>
+  <ul>
+    {items.map((item) => <li>{typeof item === 'string' ? item : <Emphasized item={item} />}</li>)}
+  </ul>
+</div>
+
+<style>
+  h3 {
+    margin-bottom: 0.5rem;
+    font: 600 1rem/1.4 var(--font-sans);
+    letter-spacing: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    padding: 1.1rem 0 1.1rem 1.75rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+
+  li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* A square rather than a dash: many items already contain " — ". */
+  li::before {
+    content: '';
+    position: absolute;
+    top: 1.72rem;
+    left: 0.1rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--ink);
+  }
+</style>

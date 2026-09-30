@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import FormatNote from './FormatNote.astro';
+import ItemList from './ItemList.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { coaching, photos } = site;
+---
+
+<Section id="coaching" tone="white" labelledby="coaching-title">
+  <div class="grid">
+    <div class="head">
+      <SectionHeading id="coaching-title" label={coaching.label} title={coaching.title} />
+    </div>
+
+    <div class="photo">
+      <Image
+        src={photos.coaching}
+        alt={site.name}
+        widths={[480, 720, 1000]}
+        sizes="(min-width: 56rem) 30rem, calc(100vw - 2.5rem)"
+      />
+    </div>
+
+    <div class="body">
+      <p class="intro">{coaching.intro}</p>
+      <ItemList title={coaching.listTitle} items={coaching.items} />
+      <FormatNote item={coaching.format} />
+    </div>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-areas: 'head' 'photo' 'body';
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .photo {
+    grid-area: photo;
+    max-width: 30rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+  }
+
+  .body {
+    grid-area: body;
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .intro {
+    max-width: 38rem;
+    color: var(--ink-2);
+    font-size: clamp(1.125rem, 1.8vw, 1.3rem);
+    line-height: 1.55;
+  }
+
+  /* Photo on the left for the full height of the text, which runs on the
+     right; it stays in view while the list scrolls past. */
+  @media (min-width: 56rem) {
+    .grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas:
+        'photo head'
+        'photo body';
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(3rem, 7vw, 6rem);
+    }
+
+    .photo {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+      margin-bottom: 0;
+    }
+  }
+</style>

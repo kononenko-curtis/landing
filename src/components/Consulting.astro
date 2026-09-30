@@ -1,6 +1,7 @@
 ---
 import { site } from '../data/site';
-import Emphasized from './Emphasized.astro';
+import FormatNote from './FormatNote.astro';
+import ItemList from './ItemList.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 
@@ -12,21 +13,12 @@ const { consulting } = site;
 
   <div class="grid">
     <p class="intro">{consulting.intro}</p>
-
     <div class="list">
-      <h3>{consulting.listTitle}</h3>
-      <ul>
-        {
-          consulting.items.map((item) => (
-            <li>
-              <Emphasized item={item} />
-            </li>
-          ))
-        }
-      </ul>
+      <ItemList title={consulting.listTitle} items={consulting.items} />
     </div>
-
-    <p class="format"><Emphasized item={consulting.format} /></p>
+    <div class="format">
+      <FormatNote item={consulting.format} />
+    </div>
   </div>
 </Section>
 
@@ -49,47 +41,9 @@ const { consulting } = site;
     grid-area: list;
   }
 
-  h3 {
-    margin-bottom: 0.5rem;
-    font: 600 1rem/1.4 var(--font-sans);
-    letter-spacing: 0;
-  }
-
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  li {
-    position: relative;
-    padding: 1.1rem 0 1.1rem 1.75rem;
-    border-top: 1px solid var(--line);
-    color: var(--ink-2);
-  }
-
-  li:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-
-  /* A square rather than a dash: each item already contains " — ". */
-  li::before {
-    content: '';
-    position: absolute;
-    top: 1.72rem;
-    left: 0.1rem;
-    width: 0.4rem;
-    height: 0.4rem;
-    background: var(--ink);
-  }
-
   .format {
     grid-area: format;
     align-self: start;
-    max-width: 34rem;
-    padding: 1.35rem 1.5rem;
-    background: var(--surface);
-    color: var(--ink-2);
   }
 
   @media (min-width: 56rem) {

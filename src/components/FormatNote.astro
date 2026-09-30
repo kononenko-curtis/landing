@@ -1,0 +1,26 @@
+---
+import type { Emphasized as EmphasizedItem } from '../data/site';
+import Emphasized from './Emphasized.astro';
+
+interface Props {
+  item: EmphasizedItem;
+}
+
+const { item } = Astro.props;
+---
+
+<p class="format"><Emphasized item={item} /></p>
+
+<style>
+  .format {
+    max-width: 34rem;
+    padding: 1.35rem 1.5rem;
+    background: var(--surface);
+    color: var(--ink-2);
+  }
+
+  /* On a white band the card needs the page grey to stand apart. */
+  :global(.white) .format {
+    background: var(--bg);
+  }
+</style>
