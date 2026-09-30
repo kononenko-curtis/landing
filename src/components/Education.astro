@@ -8,7 +8,9 @@ const { education } = site;
 
 <Section id="education" labelledby="education-title">
   <div class="grid">
-    <SectionHeading id="education-title" title={education.title} />
+    <div class="head">
+      <SectionHeading id="education-title" label={education.label} />
+    </div>
 
     <ul class="entries">
       {
@@ -34,13 +36,10 @@ const { education } = site;
     list-style: none;
   }
 
-  /* No rule above the entry, matching the timeline, so the entry title lines
-     up with the section heading beside it. */
   h3 {
     max-width: 30ch;
-    padding-top: 0.5rem;
     margin-bottom: 0.85rem;
-    font-size: clamp(1.45rem, 2.5vw, 1.9rem);
+    font-size: clamp(1.35rem, 2.2vw, 1.7rem);
   }
 
   p {
@@ -48,12 +47,21 @@ const { education } = site;
     color: var(--ink-2);
   }
 
-  /* Same column split as the experience timeline directly above it. */
-  @media (min-width: 64rem) {
+  /* Same label column as the experience timeline directly above it, and the
+     entry indented past the timeline's period column and rail, so its title
+     sits under the company names. */
+  @media (min-width: 48rem) {
     .grid {
-      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-      column-gap: clamp(3rem, 6vw, 5rem);
+      grid-template-columns: var(--label-col) minmax(0, 1fr);
       align-items: start;
+    }
+
+    .head {
+      padding-top: 0.5rem;
+    }
+
+    .entries {
+      padding-left: calc(var(--period-col) + var(--rail-indent) + 1px);
     }
   }
 </style>

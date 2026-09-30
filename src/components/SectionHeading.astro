@@ -2,29 +2,50 @@
 interface Props {
   /** Becomes the heading's id, for the section's aria-labelledby. */
   id: string;
-  title: string;
-  /** Optional small label above the heading. */
+  /** Small caps label. Without a title, the label is the heading itself. */
   label?: string;
+  title?: string;
   /** Render the heading for screen readers only. */
   hidden?: boolean;
 }
 
-const { id, title, label, hidden = false } = Astro.props;
+const { id, label, title, hidden = false } = Astro.props;
 ---
 
-<div class:list={['heading', { 'visually-hidden': hidden }]}>
-  {label && <p class="eyebrow">{label}</p>}
-  <h2 id={id}>{title}</h2>
+<div class:list={['heading', { 'visually-hidden': hidden, 'label-only': !title }]}>
+  {
+    title ? (
+      <>
+        {label && <p class="eyebrow">{label}</p>}
+        <h2 id={id} class="title">
+          {title}
+        </h2>
+      </>
+    ) : (
+      <h2 id={id} class="eyebrow">
+        {label}
+      </h2>
+    )
+  }
 </div>
 
 <style>
   .heading {
-    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
   }
 
-  h2 {
+  .label-only {
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .label-only .eyebrow {
+    margin: 0;
+  }
+
+  /* 20–25% below the original clamp(2rem, 4.6vw, 3.25rem). */
+  .title {
     max-width: 24ch;
-    font-size: clamp(2rem, 4.6vw, 3.25rem);
+    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
   }
 
   /* Inside dark sections the label must lighten with the rest of the text. */

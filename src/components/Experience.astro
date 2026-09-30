@@ -9,7 +9,7 @@ const { experience } = site;
 <Section id="experience" labelledby="experience-title">
   <div class="grid">
     <div class="head">
-      <SectionHeading id="experience-title" title={experience.title} />
+      <SectionHeading id="experience-title" label={experience.label} />
     </div>
 
     <ol class="timeline">
@@ -62,18 +62,19 @@ const { experience } = site;
     background: var(--ink);
   }
 
+  /* Deliberately not small caps: the section label beside the timeline is,
+     and two identical labels side by side would compete. */
   .period {
     margin-bottom: 0.5rem;
-    color: var(--ink-3);
-    font-size: 0.8125rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
   }
 
   h3 {
     margin-bottom: 0.4rem;
-    font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    font-size: clamp(1.35rem, 2.2vw, 1.7rem);
   }
 
   .role {
@@ -91,23 +92,23 @@ const { experience } = site;
   @media (min-width: 48rem) {
     li {
       display: grid;
-      grid-template-columns: 8rem minmax(0, 1fr);
+      grid-template-columns: var(--period-col) minmax(0, 1fr);
       padding: 0;
       border-left: 0;
     }
 
     li::before {
-      top: 0.95rem;
-      left: calc(8rem - 4px);
+      top: 0.85rem;
+      left: calc(var(--period-col) - 4px);
     }
 
     .period {
       margin: 0;
-      padding-top: 0.75rem;
+      padding-top: 0.45rem;
     }
 
     .entry {
-      padding: 0 0 3.25rem 2.5rem;
+      padding: 0 0 3.25rem var(--rail-indent);
       border-left: 1px solid var(--line);
     }
 
@@ -116,16 +117,20 @@ const { experience } = site;
     }
   }
 
-  @media (min-width: 64rem) {
+  /* The label column is only as wide as the label needs, so the timeline
+     starts right beside it instead of across an empty third of the page.
+     The label stays in view while the timeline scrolls. */
+  @media (min-width: 48rem) {
     .grid {
-      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-      column-gap: clamp(3rem, 6vw, 5rem);
+      grid-template-columns: var(--label-col) minmax(0, 1fr);
     }
 
     .head {
       position: sticky;
       top: 2rem;
       align-self: start;
+      /* Line the label up with the first period, not the rail's top. */
+      padding-top: 0.5rem;
     }
   }
 </style>

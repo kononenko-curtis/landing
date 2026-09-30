@@ -10,7 +10,7 @@ const { about, photos } = site;
 <Section id="about" tone="white" labelledby="about-title">
   <div class="grid">
     <div class="head">
-      <SectionHeading id="about-title" title={about.title} />
+      <SectionHeading id="about-title" label={about.label} />
     </div>
 
     <div class="photo">
@@ -48,9 +48,12 @@ const { about, photos } = site;
     width: 100%;
   }
 
+  /* align-content: start — the body cell is stretched to the photo's height,
+     and without it the grid would spread that extra height between rows. */
   .body {
     grid-area: body;
     display: grid;
+    align-content: start;
     gap: 1.5rem;
     max-width: 40rem;
   }

@@ -52,9 +52,12 @@ const { coaching, photos } = site;
     width: 100%;
   }
 
+  /* align-content: start — the body cell is stretched to the photo's height,
+     and without it the grid would spread that extra height between rows. */
   .body {
     grid-area: body;
     display: grid;
+    align-content: start;
     gap: 2.5rem;
   }
 

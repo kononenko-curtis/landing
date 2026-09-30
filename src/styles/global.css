@@ -30,6 +30,12 @@
   --measure: 76rem;
   --gutter: clamp(1.25rem, 4vw, 2.5rem);
   --section-y: clamp(4rem, 10vw, 7.5rem);
+
+  /* Column widths shared by the experience timeline and the education entry
+     below it, so company names and the education title share one vertical. */
+  --label-col: 7.5rem;
+  --period-col: 6.5rem;
+  --rail-indent: 2.5rem;
 }
 
 *,
@@ -104,12 +110,16 @@ a {
   outline-offset: 3px;
 }
 
-/* Small uppercase label above headings. */
+/* Small uppercase label above headings. Also used as the heading itself in
+   sections whose only title is their name, so it sets its own font rather
+   than inheriting the serif from h2. */
 .eyebrow {
   margin: 0 0 1.25rem;
   color: var(--ink-3);
+  font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 500;
+  line-height: 1.4;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
