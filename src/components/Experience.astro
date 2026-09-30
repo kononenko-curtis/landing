@@ -1,0 +1,131 @@
+---
+import { site } from '../data/site';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const { experience } = site;
+---
+
+<Section id="experience" labelledby="experience-title">
+  <div class="grid">
+    <div class="head">
+      <SectionHeading id="experience-title" title={experience.title} />
+    </div>
+
+    <ol class="timeline">
+      {
+        experience.items.map((job) => (
+          <li>
+            <p class="period">{job.period}</p>
+            <div class="entry">
+              <h3>{job.company}</h3>
+              <p class="role">{job.role}</p>
+              <p class="text">{job.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+  }
+
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Narrow screens: one rail down the left, period above each company. */
+  li {
+    position: relative;
+    padding: 0 0 2.75rem 2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  li:last-child {
+    padding-bottom: 0;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    top: 0.3rem;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  .period {
+    margin-bottom: 0.5rem;
+    color: var(--ink-3);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    margin-bottom: 0.4rem;
+    font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+  }
+
+  .role {
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+  }
+
+  .text {
+    max-width: 42rem;
+    color: var(--ink-2);
+  }
+
+  /* Wide screens: the period gets its own column and the rail runs between
+     it and the entry. */
+  @media (min-width: 48rem) {
+    li {
+      display: grid;
+      grid-template-columns: 8rem minmax(0, 1fr);
+      padding: 0;
+      border-left: 0;
+    }
+
+    li::before {
+      top: 0.95rem;
+      left: calc(8rem - 4px);
+    }
+
+    .period {
+      margin: 0;
+      padding-top: 0.75rem;
+    }
+
+    .entry {
+      padding: 0 0 3.25rem 2.5rem;
+      border-left: 1px solid var(--line);
+    }
+
+    li:last-child .entry {
+      padding-bottom: 0;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      column-gap: clamp(3rem, 6vw, 5rem);
+    }
+
+    .head {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+  }
+</style>
