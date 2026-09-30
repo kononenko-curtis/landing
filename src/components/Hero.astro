@@ -50,15 +50,17 @@ const eyebrowParts = hero.eyebrow.split(' · ');
     overflow: hidden;
   }
 
+  /* Narrow screens: photo first, then the text (owner's request). */
   .grid {
     display: grid;
-    gap: clamp(2.5rem, 6vw, 4rem);
+    grid-template-areas: 'photo' 'copy';
+    gap: 2rem;
   }
 
-  /* Bottom padding lives on the text only: the photo is cropped at the waist
-     and sits flush on the section's lower edge. */
   .copy {
+    grid-area: copy;
     align-self: center;
+    padding-bottom: clamp(3rem, 8vw, 6rem);
   }
 
   .eyebrow .line {
@@ -91,6 +93,7 @@ const eyebrowParts = hero.eyebrow.split(' · ');
   }
 
   .photo {
+    grid-area: photo;
     justify-self: center;
     width: 100%;
     max-width: 34rem;
@@ -106,14 +109,15 @@ const eyebrowParts = hero.eyebrow.split(' · ');
     }
   }
 
+  /* Wide screens: text left, photo right. Bottom padding lives on the text
+     only: the photo is cropped at the waist and sits flush on the section's
+     lower edge. */
   @media (min-width: 56rem) {
     .grid {
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      grid-template-areas: 'copy photo';
       align-items: end;
-    }
-
-    .copy {
-      padding-bottom: clamp(3rem, 8vw, 6rem);
+      gap: clamp(2.5rem, 6vw, 4rem);
     }
 
     .photo {
