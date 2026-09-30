@@ -5,7 +5,7 @@ import Button from './Button.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 
-const { contacts, hero, photos, telegramUrl } = site;
+const { contacts, photos, telegramUrl } = site;
 
 const external = (href: string) =>
   href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {};
@@ -40,9 +40,8 @@ const external = (href: string) =>
         }
       </ul>
 
-      {/* The hero's second button label, reused as-is. */}
       <div class="action">
-        <Button href={telegramUrl}>{hero.secondaryCta}</Button>
+        <Button href={telegramUrl}>{contacts.cta}</Button>
       </div>
     </div>
   </div>
@@ -98,16 +97,21 @@ const external = (href: string) =>
     color: var(--on-dark-2);
   }
 
+  /* Set in the text grotesk: a handle and an address read as data, and the
+     serif made them look like headings. */
   li a {
     color: var(--on-dark);
-    font-family: var(--font-serif);
-    font-size: clamp(1.3rem, 2.4vw, 1.65rem);
-    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: clamp(1.125rem, 2vw, 1.35rem);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--dark-line);
+    text-underline-offset: 0.25em;
     overflow-wrap: anywhere;
   }
 
   li a:hover {
-    text-decoration: underline;
+    text-decoration-color: currentColor;
   }
 
   li a:focus-visible {

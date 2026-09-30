@@ -17,7 +17,7 @@
 
   --dark: #111111;
   --on-dark: #f4f4f4;
-  --on-dark-2: #a3a3a3; /* 7.5:1 on --dark */
+  --on-dark-2: #bdbdbd; /* 10:1 on --dark (raised from 7.5:1 for legibility) */
   --dark-line: #2e2e2e;
 
   --accent: #d2361a; /* white text 4.9:1; vs --bg 4.5:1; vs --dark 3.9:1 */
@@ -25,7 +25,10 @@
   --on-accent: #ffffff;
 
   --font-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Playfair Display Variable', Georgia, 'Times New Roman', serif;
+  /* Onest second on purpose: Playfair has no "₽" or "→" (both in the numbers
+     band), and the browser takes a missing glyph from the next family in the
+     list. Without it those came from whatever system font was around. */
+  --font-serif: 'Playfair Display Variable', 'Onest Variable', Georgia, 'Times New Roman', serif;
 
   --measure: 76rem;
   --gutter: clamp(1.25rem, 4vw, 2.5rem);

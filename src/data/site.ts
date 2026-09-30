@@ -65,7 +65,8 @@ export const site = {
     title: 'Кирилл Кононенко',
     lead: '15+ лет в образовании — офлайн-центры, онлайн-школы, B2B и работа с государством. Помогаю образовательным проектам расти и зарабатывать, а их руководителям — выдерживать этот рост.',
     primaryCta: 'Записаться на знакомство',
-    secondaryCta: 'Написать в Telegram',
+    // Scrolls to the consulting section rather than opening Telegram.
+    moreCta: 'Узнать подробнее ↓',
   },
 
   stats: {
@@ -206,9 +207,13 @@ export const site = {
     label: 'Контакты',
     title: 'Давайте познакомимся',
     text: 'Напишите пару строк о своём запросе — отвечу и предложу время для знакомства.',
+    // Originally the hero's second button; kept here when the hero's changed.
+    cta: 'Написать в Telegram',
     links: [
       { label: 'Telegram', value: '@kononenko_curtis', href: telegramUrl },
       { label: 'Почта', value: 'ks.kononenko@gmail.com', href: 'mailto:ks.kononenko@gmail.com' },
     ] satisfies ContactLink[],
   },
+
+  footer: '© 2026 Кирилл Кононенко',
 };
