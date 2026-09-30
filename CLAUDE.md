@@ -17,11 +17,14 @@ changing the stack.
 
 ## Content rules
 
-- **The copy is the owner's final text, transferred verbatim.** Do not reword, shorten,
-  "improve" or add to it — not in `site.ts`, and not as stray strings in components.
-  Visible text that is not in the owner's copy does not belong on the page. Where a
-  button repeats (end of "Как начать работу", contacts), it reuses a hero label rather
-  than introducing new wording. Image `alt` is the owner's name.
+- **The copy is the owner's text, verbatim.** It started as a transfer of `CONTENT.md`
+  and has since been revised by the owner directly (the short stat values and their
+  labels, "Узнать подробнее ↓", the section labels, the footer). Those revisions are
+  equally final. Do not reword, shorten, "improve" or add to any of it — not in
+  `site.ts`, and not as stray strings in components. Visible text the owner did not
+  write does not belong on the page. The button closing "Как начать" reuses the hero's
+  "Записаться на знакомство"; contacts has its own `cta`. Image `alt` is the owner's
+  name.
 - **Never publish a phone number.** The owner asked for it explicitly.
 - A bold lead-in inside a sentence is stored as `{ strong, rest }`, with `rest` carrying
   its own leading separator (`' — '` or `' '`). Render it through `Emphasized.astro`,
@@ -49,9 +52,12 @@ Three pieces, deliberately kept separate:
     Components decide layout only.
   - `src/components/` — one component per section, in page order in
     `src/pages/index.astro`. Shared building blocks: `Section` (band tone + padding),
-    `SectionHeading` (label + h2, optionally screen-reader-only), `Button`, `ItemList` +
-    `FormatNote` (the titled list and "Формат:" card used by consulting and coaching),
-    and `Emphasized`.
+    `SectionHeading`, `Button`, `ItemList` + `FormatNote` (the titled list and
+    "Формат:" card used by consulting and coaching), `Emphasized`, and `Footer`.
+  - **Section headings come in two shapes.** Консалтинг, Коучинг and Контакты have a
+    caps label above a real h2. Опыт, О себе, Как начать and Образование have nothing
+    but their name, so the caps label *is* the h2 (`SectionHeading` with `label` and no
+    `title`); do not add a big h2 that repeats it. Цифры keeps a screen-reader-only h2.
   - `src/pages/og.jpg.ts` — builds `/og.jpg` (1200×630) by cropping `hero.jpg` with sharp
     at build time, so the social preview cannot drift from the page photo. The crop's
     vertical position is the `TOP` constant, picked by eye; revisit it if the hero photo
@@ -74,10 +80,20 @@ Three pieces, deliberately kept separate:
   as glowing rectangles on a dark page. Contrast comes from `tone="dark"` bands instead
   (numbers, how to start, contacts), alternating with light and white bands.
 - Type: Playfair Display for headings, Onest for text, both self-hosted through
-  `@fontsource-variable` with the Cyrillic subsets preloaded in `Base.astro`.
+  `@fontsource-variable` with the Cyrillic subsets preloaded in `Base.astro`. Onest is
+  also the *second* family in `--font-serif`, on purpose: Playfair has no `₽` or `→`, and
+  without that fallback those glyphs came from whatever system font the visitor had.
+- Numbers band: every value shares one size, `min(3rem, 17cqi)` against equal-width
+  columns (1 → 3 → 5). 17cqi is just under what the longest value, "сотни млн ₽", needs to
+  stay on one line. Re-measure if a longer value is added.
+- Experience and education share column widths through `--label-col`, `--period-col`
+  and `--rail-indent`, so the education title sits under the company names. The
+  experience label is sticky from 48rem up.
 - Photos go through `astro:assets` `<Image>` with explicit `widths` and `sizes`. The hero
   image is `loading="eager"` + `fetchpriority="high"` (it is the LCP element); the rest
-  stay lazy. Photo sections alternate sides: coaching left, about right, contacts left.
+  stay lazy. Photo sections alternate sides on desktop (coaching left, about right,
+  contacts left). On narrow screens every photo, the hero's included, sits above its
+  text, set with `grid-template-areas` rather than source order.
 
 The deploy is verified end-to-end inside the workflow: after rsync it requires
 `https://kononenko.duckdns.org/` to return 200 and plain HTTP to redirect to it.
