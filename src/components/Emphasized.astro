@@ -1,0 +1,24 @@
+---
+import type { Emphasized } from '../data/site';
+
+interface Props {
+  item: Emphasized;
+}
+
+const { item } = Astro.props;
+---
+
+{/* Kept on one line: `rest` carries its own leading separator, and any
+    whitespace here would add a second one. */}
+<strong>{item.strong}</strong>{item.rest}
+
+<style>
+  strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  :global(.dark) strong {
+    color: var(--on-dark);
+  }
+</style>
