@@ -19,8 +19,9 @@ changing the stack.
 
 - **The copy is the owner's text, verbatim.** It started as a transfer of `CONTENT.md`
   and has since been revised by the owner directly (the short stat values and their
-  labels, "Узнать подробнее ↓", the section labels, the footer). Those revisions are
-  equally final. Do not reword, shorten, "improve" or add to any of it — not in
+  labels, "Узнать подробнее ↓", the section labels, the footer, the education list and
+  its group order, the closing sentence of the first О себе paragraph). Those revisions
+  are equally final. Do not reword, shorten, "improve" or add to any of it — not in
   `site.ts`, and not as stray strings in components. Visible text the owner did not
   write does not belong on the page. The button closing "Как начать" reuses the hero's
   "Записаться на знакомство"; contacts has its own `cta`. Image `alt` is the owner's
@@ -87,8 +88,12 @@ Three pieces, deliberately kept separate:
   columns (1 → 3 → 5). 17cqi is just under what the longest value, "сотни млн ₽", needs to
   stay on one line. Re-measure if a longer value is added.
 - Experience and education share column widths through `--label-col`, `--period-col`
-  and `--rail-indent`, so the education title sits under the company names. The
+  and `--rail-indent`, so the education entry titles sit under the company names. The
   experience label is sticky from 48rem up.
+- Education is grouped ("Высшее", "Дополнительное"): the group label is an `h3` in the
+  small caps `.eyebrow` style, each entry an `h4` (institution and year, serif) over its
+  description (grotesk). The order inside "Дополнительное" is the owner's and is not
+  chronological; do not sort it.
 - Photos go through `astro:assets` `<Image>` with explicit `widths` and `sizes`. The hero
   image is `loading="eager"` + `fetchpriority="high"` (it is the LCP element); the rest
   stay lazy. Photo sections alternate sides on desktop (coaching left, about right,

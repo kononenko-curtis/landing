@@ -12,16 +12,23 @@ const { education } = site;
       <SectionHeading id="education-title" label={education.label} />
     </div>
 
-    <ul class="entries">
+    <div class="groups">
       {
-        education.items.map((item) => (
-          <li>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-          </li>
+        education.groups.map((group) => (
+          <section class="group">
+            <h3 class="eyebrow">{group.title}</h3>
+            <ul class="entries">
+              {group.items.map((item) => (
+                <li>
+                  <h4>{item.title}</h4>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))
       }
-    </ul>
+    </div>
   </div>
 </Section>
 
@@ -30,15 +37,23 @@ const { education } = site;
     display: grid;
   }
 
+  .groups {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
   .entries {
+    display: grid;
+    gap: 1.75rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  h3 {
+  /* Institution and year in the serif, description in the grotesk below. */
+  h4 {
     max-width: 30ch;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.6rem;
     font-size: clamp(1.35rem, 2.2vw, 1.7rem);
   }
 
@@ -48,19 +63,16 @@ const { education } = site;
   }
 
   /* Same label column as the experience timeline directly above it, and the
-     entry indented past the timeline's period column and rail, so its title
-     sits under the company names. */
+     groups indented past the timeline's period column and rail, so the entry
+     titles sit under the company names. The section label and the first group
+     label are both small caps and share a top edge. */
   @media (min-width: 48rem) {
     .grid {
       grid-template-columns: var(--label-col) minmax(0, 1fr);
       align-items: start;
     }
 
-    .head {
-      padding-top: 0.5rem;
-    }
-
-    .entries {
+    .groups {
       padding-left: calc(var(--period-col) + var(--rail-indent) + 1px);
     }
   }

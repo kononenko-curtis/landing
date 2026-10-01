@@ -35,6 +35,18 @@ export interface Job {
   text: string;
 }
 
+export interface EducationItem {
+  /** Institution and year, set in the serif. */
+  title: string;
+  text: string;
+}
+
+export interface EducationGroup {
+  /** Small caps group label ("Высшее", "Дополнительное"). */
+  title: string;
+  items: EducationItem[];
+}
+
 export interface ContactLink {
   label: string;
   value: string;
@@ -195,12 +207,35 @@ export const site = {
 
   education: {
     label: 'Образование',
-    items: [
+    // Order within each group is the owner's, not chronological — keep it.
+    groups: [
       {
-        title: 'Академия профессионального коучинга 5 Prism, 2023–2024',
-        text: 'Программа International Level Coaching, Level 1 (аккредитована ICF). Повышение квалификации «Коучинг международного уровня», 110 часов.',
+        title: 'Высшее',
+        items: [
+          {
+            title: 'Санкт-Петербургский политехнический университет, 2012',
+            text: 'Инженер, специальность «Гидротехническое строительство».',
+          },
+        ],
       },
-    ],
+      {
+        title: 'Дополнительное',
+        items: [
+          {
+            title: 'МГИМО МИД России, 2021',
+            text: 'Повышение квалификации «GR и лоббистская деятельность в бизнесе и НКО».',
+          },
+          {
+            title: 'Нетология, 2018',
+            text: 'Профессиональная переподготовка «Директор по онлайн-маркетингу», 268 академических часов.',
+          },
+          {
+            title: 'Академия профессионального коучинга 5 Prism, 2023–2024',
+            text: 'Программа International Level Coaching, Level 1 (аккредитована ICF). Повышение квалификации «Коучинг международного уровня», 110 часов.',
+          },
+        ],
+      },
+    ] satisfies EducationGroup[],
   },
 
   contacts: {
