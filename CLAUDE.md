@@ -20,8 +20,8 @@ changing the stack.
 - **The copy is the owner's text, verbatim.** It started as a transfer of `CONTENT.md`
   and has since been revised by the owner directly (the short stat values and their
   labels, "Узнать подробнее ↓", the section labels, the footer, the education list and
-  its group order, the closing sentence of the first О себе paragraph). Those revisions
-  are equally final. Do not reword, shorten, "improve" or add to any of it — not in
+  its group order, the closing sentence of the first О себе paragraph, "Лектариум (VK)"
+  and Тетрика's "2023–2025"). Those revisions are equally final. Do not reword, shorten, "improve" or add to any of it — not in
   `site.ts`, and not as stray strings in components. Visible text the owner did not
   write does not belong on the page. The button closing "Как начать" reuses the hero's
   "Записаться на знакомство"; contacts has its own `cta`. Image `alt` is the owner's
@@ -84,9 +84,15 @@ Three pieces, deliberately kept separate:
   `@fontsource-variable` with the Cyrillic subsets preloaded in `Base.astro`. Onest is
   also the *second* family in `--font-serif`, on purpose: Playfair has no `₽` or `→`, and
   without that fallback those glyphs came from whatever system font the visitor had.
-- Numbers band: every value shares one size, `min(3rem, 17cqi)` against equal-width
-  columns (1 → 3 → 5). 17cqi is just under what the longest value, "сотни млн ₽", needs to
-  stay on one line. Re-measure if a longer value is added.
+- Numbers band: every value shares one size, `min(3rem, 16.5cqi)` against equal-width
+  columns (1 → 3 → 5). 16.5cqi is just under what the longest value, "Сотни млн ₽", needs
+  (~16.8) to stay on one line. Re-measure whenever a value changes — capitalising its
+  first letter was already enough to make it overflow at 17cqi.
+- Hero text must fit above the fold on a 720p laptop, whose real viewport is about
+  1280×560 once the browser and taskbar take their share (1280×720 itself has room to
+  spare). The name is `clamp(2.6rem, min(7vw, 12vh), 5rem)` and the hero's top padding
+  has a matching `vh` term; both only shrink on short screens. If the hero copy grows,
+  re-check eyebrow-to-buttons at 1280×560 and 1024×600.
 - Experience and education share column widths through `--label-col`, `--period-col`
   and `--rail-indent`, so the education entry titles sit under the company names. The
   experience label is sticky from 48rem up.

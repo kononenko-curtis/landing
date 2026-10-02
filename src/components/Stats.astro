@@ -39,12 +39,12 @@ const { stats } = site;
   }
 
   /* One size for every value, derived from the column width, which is the
-     same for all columns. 17cqi leaves the longest value ("сотни млн ₽")
-     a little room on one line (it needs 17.6); nowrap stops it breaking. */
+     same for all columns. 16.5cqi leaves the longest value ("Сотни млн ₽")
+     a little room on one line (it needs ~16.8); nowrap stops it breaking. */
   .value {
     margin-bottom: 0.6rem;
     font-family: var(--font-serif);
-    font-size: min(3rem, 17cqi);
+    font-size: min(3rem, 16.5cqi);
     line-height: 1.05;
     letter-spacing: -0.015em;
     white-space: nowrap;
