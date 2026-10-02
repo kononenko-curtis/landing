@@ -45,8 +45,11 @@ const eyebrowParts = hero.eyebrow.split(' · ');
 </header>
 
 <style>
+  /* The vh term only bites on short screens (unchanged at 1440×900): a 720p
+     laptop leaves ~560px of viewport once the browser and taskbar take theirs,
+     and the whole hero text has to fit in it. */
   .hero {
-    padding-top: clamp(3rem, 9vw, 6rem);
+    padding-top: clamp(2rem, min(9vw, 12vh), 6rem);
     overflow: hidden;
   }
 
@@ -71,9 +74,12 @@ const eyebrowParts = hero.eyebrow.split(' · ');
     margin-top: 0.2rem;
   }
 
+  /* ~13% below the previous 5.75rem cap. The vh term shrinks it a little
+     further on short screens so eyebrow, name, lead and both buttons stay
+     above the fold on a 1280×720 laptop. */
   h1 {
     margin-bottom: 1.5rem;
-    font-size: clamp(2.9rem, 8.5vw, 5.75rem);
+    font-size: clamp(2.6rem, min(7vw, 12vh), 5rem);
     line-height: 1;
     letter-spacing: -0.025em;
   }
